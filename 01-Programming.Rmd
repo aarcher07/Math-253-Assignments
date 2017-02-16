@@ -1,11 +1,36 @@
 # In-Class Programming Activity, Day 1
 
-Your work goes here ...
+## Andre Archer
 
-
-
-## Test statements
+## Task 1
 
 ```{r}
-scoreActivity::score253(1)
+library(mosaicData)
+
+```
+## Task 2
+
+```{r}
+paste("Today", "is", date())
+```
+## Task 3
+```{r}
+task3a = names(Galton)
+task3b = nrow(Galton)
+task3c = mean(Galton$height)
+```
+
+## Task 4
+```{r}
+rbind(1:3,4:6)
+```
+
+## Task 5
+```{r}
+task5x= runif(1000);
+task5y = runif(1000);
+
+task5diff = sqrt((task5x)^2 + (task5y)^2)
+sum(task5diff <= 1)/1000
+
 ```
