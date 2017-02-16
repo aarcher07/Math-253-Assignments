@@ -1,9 +1,30 @@
 # In-Class Programming Activity, Day 2
 
-Your work goes here ...
+## Task 1
 
+```{r}
+#download.file("http://www-bcf.usc.edu/~gareth/ISL/Auto.csv",
+#              destfile="Auto.csv")
+auto_file_name= "/Users/aarcher/Desktop/Maching Learning/Math-253-Assignments/Auto.csv"
+```
 
+## Task 2
 
+```{r}
+Auto<-read.csv(auto_file_name,header=T,na.strings ="?")
+```
+
+## Task 3
+
+```{r}
+task3 <- with(Auto, summary(horsepower))
+```
+
+## Task 5
+```{r}
+task5top <- Auto[1:5,1:3]
+task5bottom <- Auto[393:397,7:9]
+```
 ## Test statements
 
 ```{r}
