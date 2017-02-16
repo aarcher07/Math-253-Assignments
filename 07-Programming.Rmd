@@ -1,8 +1,49 @@
 # In-Class Programming Activity, Day 7
 
-Your work goes here ...
+## Task 1
 
+```{r}
+vals = rexp(10, rate=1/100)
+```
 
+## Task 2
+
+```{r}
+test200 = sum(log(dexp(vals,rate=1/200)))
+```
+
+## Task 3
+
+```{r}
+LL_exp <- function(rate){
+  return(sum(log(dexp(vals,rate=rate))))
+}
+LL_exp(1/200)
+```
+
+## Task 4
+
+```{r}
+rates<-seq(1/200,1/50,by=0.0000001)
+```
+
+## Task 5
+
+```{r}
+results <- sapply(rates, LL_exp)
+```
+
+```{r}
+plot(1/rates,results)
+```
+
+## Task 6
+```{r}
+exp_results = optimize(LL_exp, 
+                        lower=1/200, upper=1/50,
+                        maximum = TRUE)
+exp_results$maximum
+```
 
 ## Test statements
 
