@@ -34,7 +34,10 @@ taxi_likelihood <- function(P) {
 }
 starting_params=c( 2.00, 4.00, 1/3)
 best <- optim(starting_params, taxi_likelihood, control=list(fnscale = -1))
+plot(NYTaxis$trip_distance,NYTaxis$fare_amount,xlab='trip distance',ylab='')
 
+P = best$par
+abline(P[1],P[2],col='blue',lwd=3)
 ```
 
 ```{r}
