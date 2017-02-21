@@ -1,9 +1,36 @@
 # In-Class Programming Activity, Day 4
 
-Your work goes here ...
+##Task 1
+```{r}
+plot(1, xlim = c(0, 100), ylim = c(0,100), type="n")
+```
 
+##Task 2
+```{r}
+plot(1, xlim = c(0, 100), ylim = c(0,100), type="n")
+points(c(20,60),c(60,60),pch=9)
+lines(c(20,60),c(60,60))
+lines(c(20,20),c(60,0))
+lines(c(60,60),c(60,0))
+```
 
+## Task 3
+```{r}
+plot(1, xlim = c(0, 100), ylim = c(0,100), type="n")
+xx=seq(0,2*pi,by=0.001)
+x1=50+20*cos(xx)
+y1=60+20*sin(xx)
+points(x1,y1,pch=1)
+```
 
+## Test 4
+
+## Task 5
+```{r}
+plot(1, xlim = c(0, 100), ylim = c(0,100), type="n",ylab="y axis", xlab="x axis",xaxt ="n")
+points(c(50,30,70),c(60,60,60),col = col2rgb('tomato', alpha = .1),pch=4)
+
+```
 ## Test statements
 
 ```{r}
