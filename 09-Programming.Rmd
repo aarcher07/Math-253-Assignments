@@ -3,7 +3,23 @@
 Your work goes here ...
 
 
+```{r}
+suits <- function(x){
+  x%%10
+}
 
+rank <- function(x){
+  x%/%10
+}
+
+is_royal_flush<- function(hand){
+  all(rank(hand) == 13:9) && all(suits(hand)==suits(hand)[1])
+}
+
+is_straight_flush<- function(hand){
+    all((sort(rank(hand))-sort(rank(hand))[1]) == 0:4) && all(rank(hand) != 13:9) && all(suits(hand)==suits(hand)[1]) 
+}
+```
 ## Test statements
 
 ```{r}
