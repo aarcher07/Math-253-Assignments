@@ -2,6 +2,22 @@
 
 Your work goes here ...
 
+## Task 1
+
+```{r}
+sigma=cbind(c(1,-0.7),c(-0.7,1))
+sigma_inv=solve(sigma)
+sigma%*%sigma_inv
+```
+## Task 2
+```{r}
+A=chol(sigma)
+A
+t(A)
+t(A)%*%A
+```
+
+# Task 3
 
 
 ## Test statements

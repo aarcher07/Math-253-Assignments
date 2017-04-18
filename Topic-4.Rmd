@@ -1,2 +1,274 @@
 # Topic 4 Exercises: Classification
+```{r}
+library(ISLR)
+```
+## 1 Logistic function to logit representation
 
+$$p(X) = \frac{e^{\beta_0 + \beta_1X}}{1+ e^{\beta_0 + \beta_1X}}$$
+$$p(X)(1+ e^{\beta_0 + \beta_1X}) = e^{\beta_0 + \beta_1X}$$
+$$p(X) = e^{\beta_0 + \beta_1X}(1-p(X))$$
+$$\frac{p(X)}{1-p(X)} = e^{\beta_0 + \beta_1X}$$
+
+## Exercise 8
+
+ I would prefer to use logistic regression since it has a lower test error. When $K=1$, KNN has a training error of $0\%$. The testing error must be $36\%$.  KNN has a high test error than logistic regression which has a test error $30\%$.
+## Exercise 9
+
+## (a) Odds
+
+$$\frac{p(X)}{1-p(X)} = 0.37$$
+$$p(X) = 0.37(1-p(X))$$
+$$1.37p(X) = 0.37$$
+
+$$p(X) = 0.27$$
+
+## (b)
+
+$$\text{odd} = 0.16/1-0.16 = 0.19$$
+
+## Exercise 11
+
+## a) Mpg01
+```{r}
+Auto$mpg01=as.factor(as.numeric( Auto$mpg> median(Auto$mpg) ))
+
+```
+
+##b) Relationship between Mpg01 and other variables
+
+```{r}
+plot(Auto$mpg01,as.numeric(Auto$cylinders))
+plot(Auto$mpg01,Auto$displacement, main='Displacement')
+plot(Auto$mpg01,Auto$horsepower, main='Horsepower')
+plot(Auto$mpg01,Auto$weight, main = 'Weight')
+plot(Auto$mpg01,Auto$acceleration, main='Acceleration')
+```
+
+Weight, displacement horsepower are the best predictors of mpg01 because of the large difference between the median of 0 and 1. 
+
+##c) Training and Testing Data
+
+```{r}
+training=Auto[as.numeric(Auto$year) <11,]
+testing = Auto[!(as.numeric(Auto$year) < 11),]
+```
+
+## d) LDA
+
+```{r}
+lda.fit=lda(mpg01~weight+horsepower+displacement,data=training)
+lda.pred.train=predict(lda.fit)
+lda.pred.test=predict(lda.fit, testing)
+table(lda.pred.train$class,training$mpg01)
+table(lda.pred.test$class,testing$mpg01)
+mean(!(lda.pred.train$class==training$mpg01))
+mean(!(lda.pred.test$class==testing$mpg01))
+```
+The training error is $11\%$ and the testing error is $14\%$.
+
+## e) QDA
+```{r}
+qda.fit=qda(mpg01~weight+horsepower+displacement,data=training)
+qda.pred.train=predict(qda.fit)
+qda.pred.test=predict(qda.fit, testing)
+table(qda.pred.train$class,training$mpg01)
+table(qda.pred.test$class,testing$mpg01)
+mean(!(qda.pred.train$class==training$mpg01))
+mean(!(qda.pred.test$class==testing$mpg01))
+```
+The training error is $9\%$ and the testing error is $16\%$.
+
+##f) Logistic Regression
+```{r}
+glm.fit=glm(mpg01~weight+horsepower+displacement,data=training,family=binomial)
+glm.probs.train=predict(glm.fit,type='response')
+glm.probs.test=predict(glm.fit, testing,type='response')
+
+glm.pred.train = rep(0,length(training$mpg01))
+glm.pred.test = rep(0,length(testing$mpg01))
+
+glm.pred.train[glm.probs.train>0.5] = 1
+glm.pred.test[glm.probs.test>0.5] = 1
+
+table(glm.pred.train,training$mpg01)
+table(glm.pred.test,testing$mpg01)
+mean(!(glm.pred.train==training$mpg01))
+mean(!(glm.pred.test==testing$mpg01))
+```
+The training error is $11\%$ and testing error is $27\%$.
+
+```{r}
+library(class)
+train.K=training[,c("cylinders","displacement","horsepower")]
+test.K=testing[,c("cylinders","displacement","horsepower")]
+set.seed(1)
+knn.pred=knn(train.K,test.K,training$mpg01,k=1)
+table(knn.pred, testing$mpg01)
+mean(!(knn.pred==testing$mpg01))
+knn.pred=knn(train.K,test.K,training$mpg01,k=2)
+table(knn.pred, testing$mpg01)
+mean(!(knn.pred==testing$mpg01))
+knn.pred=knn(train.K,test.K,training$mpg01,k=3)
+table(knn.pred, testing$mpg01)
+mean(!(knn.pred==testing$mpg01))
+knn.pred=knn(train.K,test.K,training$mpg01,k=4)
+table(knn.pred, testing$mpg01)
+mean(!(knn.pred==testing$mpg01))
+knn.pred=knn(train.K,test.K,training$mpg01,k=5)
+table(knn.pred, testing$mpg01)
+mean(!(knn.pred==testing$mpg01))
+knn.pred=knn(train.K,test.K,training$mpg01,k=6)
+table(knn.pred, testing$mpg01)
+mean(!(knn.pred==testing$mpg01))
+```
+
+I obtain testing errors: $26\%$, $22\%$, $21\%$, $17\%$, $20\%$ and $20\%$. $k=4$ has the lowest testing error of 17\%.
+
+## Exercise 13
+
+```{r}
+names(Boston)
+Boston$crim01= as.factor(as.numeric(Boston$crim > median(Boston$crim)))
+plot(Boston$crim01,Boston$zn)
+plot(Boston$crim01,Boston$indus)
+plot(Boston$crim01,Boston$chas)
+plot(Boston$crim01,Boston$nox)
+plot(Boston$crim01,Boston$rm)
+plot(Boston$crim01,Boston$age)
+plot(Boston$crim01,Boston$dis)
+plot(Boston$crim01,Boston$rad)
+plot(Boston$crim01,Boston$tax)
+plot(Boston$crim01,Boston$ptratio)
+plot(Boston$crim01,Boston$black)
+plot(Boston$crim01,Boston$lstat)
+plot(Boston$crim01,Boston$medv)
+```
+```{r}
+ 
+training=Boston[Boston$age <85,]
+testing = Boston[!(Boston$age < 85),]
+
+```
+
+```{r}
+glm.fit=glm(crim01~medv+lstat+ptratio+tax+nox+indus,data=training,family=binomial)
+glm.probs.train=predict(glm.fit,type='response')
+glm.probs.test=predict(glm.fit, testing,type='response')
+
+glm.pred.train = rep(0,length(training$crim01))
+glm.pred.test = rep(0,length(testing$crim01))
+
+glm.pred.train[glm.probs.train>0.5] = 1
+glm.pred.test[glm.probs.test>0.5] = 1
+mean(!(glm.pred.train==training$crim01))
+mean(!(glm.pred.test==testing$crim01))
+```
+
+```{r}
+lda.fit=lda(crim01~medv+lstat+ptratio+tax+nox+indus,data=training)
+lda.pred.train=predict(lda.fit)
+lda.pred.test=predict(lda.fit, testing)
+table(lda.pred.train$class,training$crim01)
+table(lda.pred.test$class,testing$crim01)
+mean(!(lda.pred.train$class==training$crim01))
+mean(!(lda.pred.test$class==testing$crim01))
+```
+
+```{r}
+glm.fit=glm(crim01~medv+ptratio+tax+nox,data=training,family=binomial)
+glm.probs.train=predict(glm.fit,type='response')
+glm.probs.test=predict(glm.fit, testing,type='response')
+
+glm.pred.train = rep(0,length(training$crim01))
+glm.pred.test = rep(0,length(testing$crim01))
+
+glm.pred.train[glm.probs.train>0.5] = 1
+glm.pred.test[glm.probs.test>0.5] = 1
+mean(!(glm.pred.train==training$crim01))
+mean(!(glm.pred.test==testing$crim01))
+```
+
+```{r}
+lda.fit=lda(crim01~medv+ptratio+tax+nox,data=training)
+lda.pred.train=predict(lda.fit)
+lda.pred.test=predict(lda.fit, testing)
+table(lda.pred.train$class,training$crim01)
+table(lda.pred.test$class,testing$crim01)
+mean(!(lda.pred.train$class==training$crim01))
+mean(!(lda.pred.test$class==testing$crim01))
+```
+
+
+```{r}
+library(class)
+train.K=training[,c("medv","ptratio","tax","nox")]
+test.K=testing[,c("medv","ptratio","tax","nox")]
+set.seed(1)
+knn.pred=knn(train.K,test.K,training$crim01,k=1)
+table(knn.pred, testing$crim01)
+mean(!(knn.pred==testing$crim01))
+knn.pred=knn(train.K,test.K,training$crim01,k=2)
+table(knn.pred, testing$crim01)
+mean(!(knn.pred==testing$crim01))
+knn.pred=knn(train.K,test.K,training$crim01,k=3)
+table(knn.pred, testing$crim01)
+mean(!(knn.pred==testing$crim01))
+knn.pred=knn(train.K,test.K,training$crim01,k=4)
+table(knn.pred, testing$crim01)
+mean(!(knn.pred==testing$crim01))
+knn.pred=knn(train.K,test.K,training$crim01,k=5)
+table(knn.pred, testing$crim01)
+mean(!(knn.pred==testing$crim01))
+knn.pred=knn(train.K,test.K,training$crim01,k=6)
+table(knn.pred, testing$crim01)
+mean(!(knn.pred==testing$crim01))
+```
+```{r}
+glm.fit=glm(crim01~medv+ptratio+tax+nox+indus,data=training,family=binomial)
+glm.probs.train=predict(glm.fit,type='response')
+glm.probs.test=predict(glm.fit, testing,type='response')
+
+glm.pred.train = rep(0,length(training$crim01))
+glm.pred.test = rep(0,length(testing$crim01))
+
+glm.pred.train[glm.probs.train>0.5] = 1
+glm.pred.test[glm.probs.test>0.5] = 1
+mean(!(glm.pred.train==training$crim01))
+mean(!(glm.pred.test==testing$crim01))
+```
+
+```{r}
+lda.fit=lda(crim01~medv+ptratio+tax+nox+indus,data=training)
+lda.pred.train=predict(lda.fit)
+lda.pred.test=predict(lda.fit, testing)
+table(lda.pred.train$class,training$crim01)
+table(lda.pred.test$class,testing$crim01)
+mean(!(lda.pred.train$class==training$crim01))
+mean(!(lda.pred.test$class==testing$crim01))
+```
+
+
+```{r}
+library(class)
+train.K=training[,c("medv","ptratio","tax","nox","indus")]
+test.K=testing[,c("medv","ptratio","tax","nox","indus")]
+set.seed(1)
+knn.pred=knn(train.K,test.K,training$crim01,k=1)
+table(knn.pred, testing$crim01)
+mean(!(knn.pred==testing$crim01))
+knn.pred=knn(train.K,test.K,training$crim01,k=2)
+table(knn.pred, testing$crim01)
+mean(!(knn.pred==testing$crim01))
+knn.pred=knn(train.K,test.K,training$crim01,k=3)
+table(knn.pred, testing$crim01)
+mean(!(knn.pred==testing$crim01))
+knn.pred=knn(train.K,test.K,training$crim01,k=4)
+table(knn.pred, testing$crim01)
+mean(!(knn.pred==testing$crim01))
+knn.pred=knn(train.K,test.K,training$crim01,k=5)
+table(knn.pred, testing$crim01)
+mean(!(knn.pred==testing$crim01))
+knn.pred=knn(train.K,test.K,training$crim01,k=6)
+table(knn.pred, testing$crim01)
+mean(!(knn.pred==testing$crim01))
+```

@@ -1,2 +1,136 @@
 # Topic 2 Exercises: Linear Regression
 
+## Exercise 3
+
+## (a)
+
+(iii) is correct because of the negative interaction  and GPA increases the positive constant.
+
+## (b)
+$$y= 50 + 20\cdot\text{GPA} + 0.07 \cdot \text{IQ} + 35 \cdot \text{Gender} + 0.01\cdot\text{GPA:IQ} - 10\cdot\text{GPA:Gender} = 137.1$$
+
+
+## (c)
+False. A small value tells us the interaction my negilible. But whether there is little evidence is different question. To answer such a question, we must check the p value of the coefficient.
+
+## Exercise 4
+
+##a) Training error in Linear vs. Cubic models
+
+The cubic regression should have the lowest training error since it can capture variability in the noise.
+
+##b) Testing error
+
+The cubic model would capture no much noise and deviate from the linear function we are trying to approximate. The linear model, due to inflexiblity, would not capture as much noise. Additionally since a linear model is the functional form, it should have the lowest test error.
+
+##c) Non linear relationship and training error
+
+Because of flexibility, the cubic model would capture more noise in the data. The training error would then be lower in the cubic model than in the linear model.
+
+## d) Non linear relationship and testing error
+
+There is not enough information to compare the testing error of both models. The nonlinear would force the bias of the cubic to decrease. However, we do not know if decrease is enough to counteract increase in the variance of the cubic model.
+
+## Exercise 6
+
+
+
+##Exercise 13
+
+##a) Generate X
+```{r}
+set.seed(1)
+X1= rnorm(100)
+```
+
+##b) Generate eps
+```{r}
+eps1= rnorm(100,sd=0.5)
+```
+
+##c) Generate Y
+```{r}
+Y1=-1 + 0.5*X1 + eps1
+```
+
+Y has length 100, $\beta_0 = -1$ and $\beta_1 = 0.5$.
+
+##d) Scatterplot
+```{r}
+plot(X1,Y1,main='Scatterplot')
+```
+
+##e) Model 
+```{r}
+lm.fit1=lm(Y1~X1)
+```
+
+$\hat{\beta_0}$ and $\hat{\beta_1}$ are very close to the actual values.
+
+##f) Least squares line
+```{r}
+plot(X1,Y1,main='Scatterplot')
+abline(lm.fit1)
+f = function(X){-1 + X*0.5}
+lines(X1,f(X1),col='red')
+legend(1,0.5,c('Model line','Population Line'),col = c('black','red'),lty = 1)
+```
+
+##g)  Polynomial regression model
+
+```{r}
+lm.fit.nonlinear1=lm(Y1~X1+I(X1^2))
+summary(lm.fit.nonlinear1)
+```
+
+The p value is greater than 0.05 so we can remove the term. (Ask Kaplan about this... this does not give us enough evidence to reject null but is not enough to accept $H_0$)
+
+##h) Lower Variance
+```{r}
+set.seed(1)
+X2= rnorm(100)
+eps2= rnorm(100,sd=0.25)
+Y2=-1 + 0.5*X2 + eps2
+plot(X2,Y2,main='Scatterplot')
+f = function(X){-1 + X*0.5}
+lines(X2,f(X2),col='red')
+legend(1,0.5,c('Model line','Population Line'),col = c('black','red'),lty = 1)
+
+lm.fit2=lm(Y2~X2)
+summary(lm.fit2)
+abline(lm.fit2)
+lm.fit.nonlinear2=lm(Y2~X2+I(X2^2))
+summary(lm.fit.nonlinear2)
+```
+
+The coefficients of the linear model with less noise are a bit closer to coefficients of actual function. The $X^2$ term in the model with less noise has a p value and thus insignificant.
+
+## j) Higher variance
+```{r}
+set.seed(1)
+X3= rnorm(100)
+eps3= rnorm(100,sd=1)
+Y3=-1 + 0.5*X3 + eps3
+plot(X3,Y3,main='Scatterplot')
+f = function(X){-1 + X*0.5}
+lines(X3,f(X3),col='red')
+legend(1,1.3,c('Model line','Population Line'),col = c('black','red'),lty = 1)
+lm.fit3=lm(Y3~X3)
+summary(lm.fit3)
+abline(lm.fit3)
+lm.fit.nonlinear3=lm(Y3~X3+I(X3^2))
+summary(lm.fit.nonlinear3)
+```
+
+The coefficients of the linear model with more noise are a bit further from the coefficients of actual function. The $X^2$ term in the model with less noise has a p value and thus insignificant.
+
+## j) Confidence Intervals
+
+```{r}
+confint(lm.fit1)
+confint(lm.fit2)
+confint(lm.fit3)
+```
+
+The confidence interval of coefficents of the less noise data are smaller than the intervals of the original data. The confidence intervals of the original data set are smaller than the intervals of the noise data set.
+

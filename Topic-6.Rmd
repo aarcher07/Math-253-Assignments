@@ -1,2 +1,121 @@
 # Topic 6 Exercises: Selecting Model Terms
+## Exercise 1
+## a) Training RSS
 
+
+
+## b) Testing R
+
+
+## c) 
+i) True -- Forward selection uses the predictors of the $k$-variable model in the previous iteration to determine the $k+1$ predictors in  $k+1$-variable model.
+
+ii) True -- Backward selection uses the predictors of the $k+1$-variable model in the previous iteration to determine the $k$ predictors in  $k$-variable model.
+
+iii) False -- The iterations of the forward and backward selection are not necessarily related.
+
+iv) False -- The iterations of the forward and backward selection are not necessarily related.
+
+v) False -- Best subset selection searches the space of $k$ and $k+1$ model for the lowest RSS independently. 
+
+
+## Exercise 9
+
+##a) LASSO vs Least Squares
+
+iii) is correct -- LASSO decreases flexibility as it decreases the number of degrees of freedom of the model. LASSO decreases variability of the model and increase bias of the model (in the event that the function is  linear). LASSO will lower test RSS if the decrease in variability offsets the increase in bias.
+
+## b) Rigid regression vs. Least Squares
+iii) is correct -- Rigid regression decreases flexibility as it decreases the number of degrees of freedom of the model. Rigid regression decreases variability of the model and increases bias of the model (in the event that the original function is linear). Rigid regression will lower test RSS if the decrease in variability offsets the increase in bias.
+
+## c) Non-linear methods vs Least Squares
+
+ii) is correct -- Non-linear methods increases flexibility as it increases the number of degrees of freedom of the model. Non-linear methods increases variability of the model and decreases bias of the model (in the event that the original function is linear). Rigid regression will lower test RSS if the decrease in variability offsets the increase in bias.
+
+## Exercise 9
+
+## a) Splitting data
+```{r}
+library(ISLR)
+training=College[College$S.F.Ratio<15,]
+testing=College[!(College$S.F.Ratio<15),]
+```
+
+## b) Linear Model
+```{r}
+lm.fit=lm(Apps~Private+Accept+Enroll+Top10perc+Top25perc+F.Undergrad +P.Undergrad+Outstate+Room.Board+Books+Personal+PhD+Terminal+S.F.Ratio+perc.alumni+Expend+Grad.Rate+Yield,data=College)
+mean((testing[,2]-predict(lm.fit,testing[,c(-2)]))^2)
+```
+
+The RSS is 1166618.
+
+## c) Ridge Regression Model
+```{r}
+library(glmnet)
+library(leaps)
+set.seed(1)
+
+x = model.matrix(Apps~.,College)[,-2]
+y = College$Apps
+
+x.training=x[x[,14]<15,]
+y.training=y[x[,14]<15]
+
+x.testing=x[!(x[,14]<15),]
+y.testing=y[!(x[,14]<15)]
+ grid=10^seq(3,-2,length=100)
+ ridge.mod=glmnet(x.training,y.training,alpha=0,lambda=grid, thresh =1e-12)
+cv.out=cv.glmnet(x.training,y.training,alpha=0)
+bestlam=cv.out$lambda.min
+ridge.pred=predict(ridge.mod,s=bestlam ,x.testing)
+mean((ridge.pred-y.testing)^2)
+```
+
+The mean squared error is 3528936.
+## d) LASSO
+```{r}
+library(glmnet)
+library(leaps)
+set.seed(1)
+
+x = model.matrix(Apps~.,College)[,-2]
+y = College$Apps
+
+x.training=x[x[,14]<15,]
+y.training=y[x[,14]<15]
+
+x.testing=x[!(x[,14]<15),]
+y.testing=y[!(x[,14]<15)]
+ grid=10^seq(3,-2,length=100)
+ ridge.mod=glmnet(x.training,y.training,alpha=1,lambda=grid, thresh =1e-12)
+cv.out=cv.glmnet(x.training,y.training,alpha=1)
+bestlam=cv.out$lambda.min
+ridge.pred=predict(ridge.mod,s=bestlam ,x.testing)
+mean((ridge.pred-y.testing)^2)
+```
+MSE is 2676618.
+
+## e) PCR model
+```{r}
+library(pls)
+set.seed(2)
+pcr.fit=pcr(Apps~., data=training ,scale=TRUE,validation ="CV")
+validationplot(pcr.fit,val.type="MSEP")
+pcr.pred=predict(pcr.fit,x.testing,ncomp=15)
+mean((pcr.pred-y.testing)^2)
+```
+
+MSE is 4044052.
+
+## f) PCF model
+
+```{r}
+
+set.seed (1)
+pls.fit=plsr(Apps~.,data=training,scale=TRUE,validation ="CV")
+validationplot(pls.fit,val.type="MSEP")
+pls.pred=predict(pls.fit,x.testing,ncomp=2)
+mean((pls.pred-y.testing)^2)
+```
+
+MSE is 4761855.
