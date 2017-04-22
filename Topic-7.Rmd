@@ -1,2 +1,98 @@
 # Topic 7 Exercises: Nonlinear regression
 
+# Exercise 3
+
+```{r}
+f= function(x){1+x-2*(x-1)^2*(x>=1)}
+tt=seq(-2000,2000)/1000
+plot(tt,f(tt),ylab='Y',xlab='X',type='l',main='Exercise 3')
+```
+
+
+# Exercise 4
+```{r}
+g= function(x){1 + 1*((0<=x & x <=2) - (x-1)*(1<=x & x <=2))-3*((x-3)*(3<=x & x<=4) - (4<=x & x<=5))}
+tt=seq(-2000,2000)/1000
+plot(tt,g(tt),ylab='Y',xlab='X',type='l',main='Exercise 5')
+```
+
+# Exercise 5
+##(a) $\lambda \to \infty$ training RSS
+
+
+##(b) $\lambda \to \infty$ training RSS
+
+
+##(c) $\lambda = 0$
+
+They both have the same training and test RSS since there is no loss function term. The optimizations are the same.
+
+# Exercise 11
+
+## (a)
+
+```{r}
+X1 = rnorm(1000, mean=6, sd=4)
+X2 = rnorm(1000, mean=10, sd=2)
+noise = rnorm(1000,sd=2)
+Y=6*X1 + 10*X2 + 5 +noise
+```
+
+## (b) choose $\hat{beta}_1$
+```{r}
+beta1=1
+```
+
+## (c) Fix $\hat{beta}_1$ and fit model
+```{r}
+a=Y-beta1*X1
+beta2=lm(a~X2)$coef[2]
+beta2
+```
+## (d) Fix $\hat{beta}_2$ and fit model
+```{r}
+a=Y-beta2*X2
+beta1=lm(a~X1)$coef[2]
+beta1
+```
+
+
+## (e) Fix $\hat{beta}_2$ and fit model
+```{r}
+beta0 = rep(NA,1000)
+beta1 = rep(NA,1000)
+beta2 = rep(NA,1000)
+beta1[1]=1
+beta1[1]=15
+beta2[1]=1
+
+
+for(i in 2:1000){
+  a=Y-beta1[i-1]*X1
+  beta2[i]=lm(a~X2)$coef[2]
+  a=Y-beta2[i-1]*X2
+  beta1[i]=lm(a~X1)$coef[2]
+  a=Y-beta1*X1-beta2*X2
+  beta0[i]=lm(a~1)$coef[1]
+}
+
+plot(1:1000,beta2,ylab='',xlab='',main='Beta values',col='red')
+points(1:1000,beta1,col='blue')
+points(1:1000,beta0,col='green')
+```
+## f) Multiple Regression
+
+```{r}
+coeffs=lm(Y~X1+X2)
+plot(1:1000,beta2,ylab='',xlab='',main='Beta values',col='red')
+points(1:1000,beta1,col='blue')
+points(1:1000,beta0,col='green')
+abline(a=coeffs$coef[1],b=0,lwd=3)
+abline(a=coeffs$coef[2],b=0,lwd=3)
+abline(a=coeffs$coef[3],b=0,lwd=3)
+```
+
+
+## g) Number of iterations for a 'good' fit
+
+Backfitting required roughly 200 iterations for a good fit.
