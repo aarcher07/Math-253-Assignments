@@ -1,4 +1,7 @@
 # In-Class Programming Activity, Day 3
+```{r}
+library(ISLR)
+```
 
 ##Task 1
 ```{r}
