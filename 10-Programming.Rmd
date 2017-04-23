@@ -1,6 +1,57 @@
 # In-Class Programming Activity, Day 10
 
-Your work goes here ...
+```{r}
+library(ISLR)
+```
+
+#Task 1
+
+```{r}
+logistic=function(x){
+  exp(x)/(1+exp(x))
+}
+```
+
+#Task 2
+```{r}
+linear_combine=function(data,coefs){
+  if(!(names(coefs)[-1] %in% colnames(data))){
+    stop("Doesn't contain that column")
+  }else{
+  result <- 0
+    for (nm in names(coefs)) {
+      if (nm == "intercept") {
+        result <- result + coefs[[nm]]
+      } else {
+         coefs[[nm]] 
+          result <- result + coefs[[nm]] * data[[nm]]
+      }
+    }
+  return(result)
+  }
+}
+```
+
+#Task 3
+```{r}
+ LL_logistic = function(data,coefs,outcome){
+   data=subset(data,select=names(coefs)[-1])
+   p=logistic(linear_combine(data,coefs))
+   return(sum(log(p[outcome]))+sum(log(1-p[!outcome])))
+ }
+
+LL_logistic(data=Default, coefs = c(intercept = 1, income = -0.0001), outcome = Default$default == "Yes")
+```
+
+#Task 4
+
+```{r}
+LL_logistic2= function(coefs){
+  LL_logistic(data=Default,coefs,outcome = Default$default == "Yes")}
+coefs = c(intercept = 1, income = -0.0001)
+best_coefs=optim(coefs,LL_logistic2, control = list(fnscale = -1))
+glm(default == "Yes" ~ income, data=Default, family="binomial")
+```
 
 
 

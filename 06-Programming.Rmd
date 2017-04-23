@@ -46,6 +46,16 @@ myHistogram=function(data,fill='blue'){
 ```
 
 #Task 2
+```{r}
+
+v = rnorm(10, mean=100, sd=1)
+bandwidth=sqrt(range(v))
+kernel=function(x){
+   
+}
+
+
+```
 
 #Task 3
 
