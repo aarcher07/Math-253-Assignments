@@ -1,8 +1,53 @@
 # In-Class Programming Activity, Day 6
 
-Your work goes here ...
+#Task 1
+```{r}
+make_one_bar <- function(point) {
+  xLeft <- point$xL
+  xRight <- point$xR
+  height <- point$count
+  res <- data.frame(
+              x = c(xLeft,  xLeft,  xRight, xRight, NA),
+              y = c(    0, height,  height,      0, NA)
+  )
+  res
+}
 
+one_to_five <- function(hist_data) {
+  bars <- NULL
+  for (k in 1:nrow(hist_data)) {
+    new_bar <- make_one_bar(hist_data[k, ])
+    bars <- rbind(bars, new_bar)
+  }
+  bars
+}
 
+myHistogram=function(data,fill='blue'){
+  nbins=10
+  evenly_spaced=seq(min(data),max(data),length=nbins+1)
+  
+  cuts=cut(data,evenly_spaced)
+  bin_counts=as.vector(table(cuts))
+  
+  hist_basics=data.frame(xL = evenly_spaced[-length(evenly_spaced)],xR=evenly_spaced[-1],count=as.numeric(bin_counts))
+  
+  my_bars=one_to_five(hist_basics)
+  plot(my_bars, type="n")
+  lines(my_bars)
+  polygon(my_bars,col=fill)
+  
+  ave = mean(data)
+  stdev = sd(data)
+  xx=seq(min(data),max(data),abs(max(data)-min(data))/100)
+  lines(xx,length(data)*dnorm(xx,mean=ave,sd=stdev))
+  
+  return(bin_counts)
+}
+```
+
+#Task 2
+
+#Task 3
 
 ## Test statements
 
