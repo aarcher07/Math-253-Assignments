@@ -5,20 +5,43 @@ Your work goes here ...
 ## Task 1
 
 ```{r}
-sigma=cbind(c(1,-0.7),c(-0.7,1))
-sigma_inv=solve(sigma)
-sigma%*%sigma_inv
+Sigma=cbind(c(1,-0.7),c(-0.7,1))
+Sigma_inv=solve(Sigma)
+Sigma%*%Sigma_inv
 ```
 ## Task 2
 ```{r}
-A=chol(sigma)
+A=chol(Sigma)
 A
 t(A)
 t(A)%*%A
 ```
 
 # Task 3
+```{r}
+x1 =rnorm(10)
+x2 =rnorm(10)
+x1=cbind(x1)
+x2=cbind(x2)
+X = cbind(x1,x2)
+cov_X=(t(X)%*%X)/nrow(X)
+```
 
+```{r}
+w1 =rnorm(10000)
+w2 =rnorm(10000)
+w1=cbind(w1)
+w2=cbind(w2)
+W = cbind(w1,w2)
+W_cov=(t(W)%*%W)/nrow(W)
+```
+
+```{r}
+A_inv=chol(Sigma_inv)
+Y=X%*%A
+Y=W%*%A
+plot(Y[,2],Y[,1],col=rgb(0, 0, 0, .05))
+```
 
 ## Test statements
 
