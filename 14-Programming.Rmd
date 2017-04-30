@@ -15,7 +15,7 @@ compare_ols_ridge <- function(responses, predictors, lambda=1){
   training_responses=responses[-index]
   training_predictors=predictors[-index,]
   
-  lm_model= lm( Phenotypes ~SNP1 +SNP2 +SNP3 +SNP4 +SNP5+ SNP6+SNP7 +SNP8 +SNP9 +SNP10 +SNP11 +SNP12,data=data.frame(Phenotypes=training_responses,training_predictors))
+  lm_model= lm( training_responses ~as.matrix(training_predictors))
   
   glm_rigid=glmnet(as.matrix(training_predictors),training_responses,nlambda=lambda, alpha=0)
   

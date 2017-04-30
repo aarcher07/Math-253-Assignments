@@ -119,64 +119,49 @@ $(document).ready(function () {
 </div>
 
 
-<div id="in-class-programming-activity-day-14" class="section level1">
-<h1>In-Class Programming Activity, Day 14</h1>
-<pre class="r"><code>library(glmnet)</code></pre>
-<pre><code>## Loading required package: Matrix</code></pre>
-<pre><code>## Loading required package: foreach</code></pre>
-<pre><code>## Loaded glmnet 2.0-5</code></pre>
-<pre class="r"><code>GenCont &lt;- read.csv(&quot;http://tiny.cc/dcf/GenCont.csv&quot;)</code></pre>
-<pre class="r"><code>compare_ols_ridge &lt;- function(responses, predictors, lambda=1){
-  n = length(responses)
-  index=sample(1:n,floor(n/2))
-  testing_responses=responses[index]
-  testing_predictors=predictors[index,]
+<div id="in-class-programming-activity-day-18" class="section level1">
+<h1>In-Class Programming Activity, Day 18</h1>
+<pre class="r"><code>my_knots= function(x, k){
+  as.vector(quantile(x,1:(k-1)/k))
+}</code></pre>
+<pre class="r"><code>spline_model_matrix=function(x, knot_locations){
+MM &lt;- cbind(1, x, x^2, x^3)
+for (i in 1:k){
+  new_vector= ((x-knots[i])^3)(x&lt;knots[i])
+  MM &lt;- cbind(MM, new_vector)
+  }
+return(MM)
+}</code></pre>
+<pre class="r"><code>fit_spline &lt;- function(formula, k=2, data=parent.frame()) {
+  y &lt;- eval(formula[[2]], envir=data)
+  x &lt;- eval(formula[[3]], envir=data)
+  knot_locations &lt;- my_knots(x, k)
+  MM &lt;- spline_model_matrix(x, knot_locations)
+  mod &lt;- lm(y ~ MM - 1)
+  res &lt;- list(coef = coef(mod), knots = knot_locations, cov = vcov(mod))
+  class(res) &lt;- &quot;my_spline&quot;
   
-  training_responses=responses[-index]
-  training_predictors=predictors[-index,]
-  
-  lm_model= lm( training_responses ~as.matrix(training_predictors))
-  
-  glm_rigid=glmnet(as.matrix(training_predictors),training_responses,nlambda=lambda, alpha=0)
-  
-  glm_rigid_predict=predict(glm_rigid, newx=as.matrix(testing_predictors))
-  lm_predict=predict(lm_model, new_data=testing_predictors)
-  
-  mse_rigid=mean((glm_rigid_predict-testing_responses)^2)
-  mse_lm=mean((lm_predict-testing_responses)^2)
-  
-  xx=sample(1:floor(n/2),replace=TRUE)
-  testing_responses_out=testing_responses[xx]
-  testing_predictors_out=testing_predictors[xx,]
-  
-    
-  glm_rigid_predict_out=predict(glm_rigid, newx=as.matrix(testing_predictors_out))
-  lm_predict_out=predict(lm_model, new_data=testing_predictors_out)
-  
-  mse_rigid_out=mean((glm_rigid_predict_out-testing_responses_out)^2)
-  mse_lm_out=mean((lm_predict_out-testing_responses_out)^2)
-  
-  
-  return(list(lambda=lambda, ols_in=mse_lm, ridge_in=mse_rigid, ols_out=mse_lm_out,  ridge_out=mse_rigid_out))
-}
-
-Shrink_results= compare_ols_ridge(GenCont$Phenotypes, GenCont[,-1], lambda=1)</code></pre>
+  return(res)
+}</code></pre>
+<pre class="r"><code>predict.my_spline &lt;- 
+  function(mod, newx, level = 0.95,
+           intervals=c(&quot;none&quot;, &quot;confidence&quot;, &quot;prediction&quot;)) {
+  intervals &lt;- match.arg(intervals)
+  MM &lt;- spline_model_matrix(newx, mod$knots)
+  vals &lt;- MM %*% mod$coef
+  se &lt;- sqrt(rowSums(MM %*% mod$cov * MM))
+  if (intervals == &quot;none&quot;) return(vals)
+  else return(NULL) # for future use
+}</code></pre>
 <div id="test-statements" class="section level2">
 <h2>Test statements</h2>
-<pre class="r"><code>scoreActivity::score253(14)</code></pre>
+<pre class="r"><code>scoreActivity::score253(18)</code></pre>
 <pre><code>## --------
-## Running test statements for day  14</code></pre>
+## Running test statements for day  18</code></pre>
 <pre><code>## Loading required package: lazyeval</code></pre>
-<pre><code>## passed: object &quot;compare_ols_ridge&quot; exists
-## passed: object &quot;GenCont&quot; exists
-## passed: object &quot;Shrink_results&quot; exists
-## passed: &quot;responses&quot; %in% names(formals(compare_ols_ridge))
-## passed: &quot;predictors&quot; %in% names(formals(compare_ols_ridge))
-## passed: &quot;lambda&quot; %in% names(formals(compare_ols_ridge))
-## passed: &quot;ols_in&quot; %in% names(Shrink_results)
-## passed: &quot;ridge_out&quot; %in% names(Shrink_results)
-## passed: Shrink_results[[&quot;lambda&quot;]]
-## passed: Shrink_results[[&quot;ols_out&quot;]]</code></pre>
+<pre><code>## FAILED: object &quot;n_cases&quot; doesn't exist.
+## FAILED: object &quot;n_predictors&quot; doesn't exist.
+## FAILED: &quot;package:e1071&quot; %in% search()</code></pre>
 </div>
 </div>
 
