@@ -1,11 +1,64 @@
 # In-Class Programming Activity, Day 13
 
 ```{r}
-GenCont <- read.csv("http://tiny.cc/dcf/GenCont.csv")
+library(ISLR)
+
 
 ```
 
+#Function Framework
+```{r}
+k_fold1 <- function(formula, method = lm, data = mtcars, predfun = predict, k = 10) {
+   sets <- 1:nrow(data)%% k
+mspe <- numeric(k)
+for (i in 1:k) {     
+  For_Training=mtcars[!(sets == (i-1)),]
+  mod <- lm(mpg ~ hp + wt + am,data=For_Training)
+  For_Testing = mtcars[(sets == (i-1)),]
+  pred_vals <- predict(mod, newdata = For_Testing)
+  mspe[i] <- mean((For_Testing[["mpg"]] - pred_vals)^2)
+}
+return(mean(mspe))
+}
+```
 
+#K sets
+
+```{r}
+k <- 10
+sets <- 1:51%% k
+```
+
+#The Loop
+
+```{r}
+k=10
+sets <- 1:32%% k
+mspe <- numeric(k)
+for (i in 1:k) {     
+  For_Training=mtcars[!(sets == (i-1)),]
+  mod <- lm(mpg ~ hp + wt + am,data=For_Training)
+  For_Testing = mtcars[(sets == (i-1)),]
+  pred_vals <- predict(mod, newdata = For_Testing)
+  mspe[i] <- mean((For_Testing[["mpg"]] - pred_vals)^2 )
+}
+mean(mspe)
+```
+
+```{r}
+k_fold<- function(formula, method = lm, data = mtcars, predfun = predict, k = 10) {
+sets <- (1:nrow(data))%% k
+mspe <- numeric(k)
+for (i in 1:k) {     
+  For_Training=data[!(sets == (i-1)),]
+  mod <- method(formula,data=For_Training)
+  For_Testing = data[(sets == (i-1)),]
+  pred_vals <- predfun(mod, newdata = For_Testing)
+  mspe[i] <- mean((For_Testing[[as.character(formula[[2]])]] - pred_vals)^2)
+  }
+mean(mspe)
+}
+```
 
 ## Test statements
 

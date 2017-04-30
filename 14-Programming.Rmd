@@ -1,6 +1,47 @@
 # In-Class Programming Activity, Day 14
 
-Your work goes here ...
+```{r}
+library(glmnet)
+GenCont <- read.csv("http://tiny.cc/dcf/GenCont.csv")
+```
+
+```{r}
+compare_ols_ridge <- function(responses, predictors, lambda=1){
+  n = length(responses)
+  index=sample(1:n,floor(n/2))
+  testing_responses=responses[index]
+  testing_predictors=predictors[index,]
+  
+  training_responses=responses[-index]
+  training_predictors=predictors[-index,]
+  
+  lm_model= lm( Phenotypes ~SNP1 +SNP2 +SNP3 +SNP4 +SNP5+ SNP6+SNP7 +SNP8 +SNP9 +SNP10 +SNP11 +SNP12,data=data.frame(Phenotypes=training_responses,training_predictors))
+  
+  glm_rigid=glmnet(as.matrix(training_predictors),training_responses,nlambda=lambda, alpha=0)
+  
+  glm_rigid_predict=predict(glm_rigid, newx=as.matrix(testing_predictors))
+  lm_predict=predict(lm_model, new_data=testing_predictors)
+  
+  mse_rigid=mean((glm_rigid_predict-testing_responses)^2)
+  mse_lm=mean((lm_predict-testing_responses)^2)
+  
+  xx=sample(1:floor(n/2),replace=TRUE)
+  testing_responses_out=testing_responses[xx]
+  testing_predictors_out=testing_predictors[xx,]
+  
+    
+  glm_rigid_predict_out=predict(glm_rigid, newx=as.matrix(testing_predictors_out))
+  lm_predict_out=predict(lm_model, new_data=testing_predictors_out)
+  
+  mse_rigid_out=mean((glm_rigid_predict_out-testing_responses_out)^2)
+  mse_lm_out=mean((lm_predict_out-testing_responses_out)^2)
+  
+  
+  return(list(lambda=lambda, ols_in=mse_lm, ridge_in=mse_rigid, ols_out=mse_lm_out,  ridge_out=mse_rigid_out))
+}
+
+Shrink_results= compare_ols_ridge(GenCont$Phenotypes, GenCont[,-1], lambda=1)
+```
 
 
 
