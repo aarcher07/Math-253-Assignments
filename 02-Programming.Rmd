@@ -5,6 +5,7 @@
 ```{r}
 #download.file("http://www-bcf.usc.edu/~gareth/ISL/Auto.csv",
 #              destfile="Auto.csv")
+library('ISLR')
 auto_file_name= "/Users/aarcher/Desktop/Maching Learning/Math-253-Assignments/Auto.csv"
 ```
 

@@ -119,45 +119,73 @@ $(document).ready(function () {
 </div>
 
 
-<div id="in-class-programming-activity-day-2" class="section level1">
-<h1>In-Class Programming Activity, Day 2</h1>
-<div id="task-1" class="section level2">
-<h2>Task 1</h2>
-<pre class="r"><code>#download.file(&quot;http://www-bcf.usc.edu/~gareth/ISL/Auto.csv&quot;,
-#              destfile=&quot;Auto.csv&quot;)
-library('ISLR')
-auto_file_name= &quot;/Users/aarcher/Desktop/Maching Learning/Math-253-Assignments/Auto.csv&quot;</code></pre>
+<div id="in-class-programming-activity-day-6" class="section level1">
+<h1>In-Class Programming Activity, Day 6</h1>
 </div>
-<div id="task-2" class="section level2">
-<h2>Task 2</h2>
-<pre class="r"><code>Auto&lt;-read.csv(auto_file_name,header=T,na.strings =&quot;?&quot;)</code></pre>
+<div id="task-1" class="section level1">
+<h1>Task 1</h1>
+<pre class="r"><code>make_one_bar &lt;- function(point) {
+  xLeft &lt;- point$xL
+  xRight &lt;- point$xR
+  height &lt;- point$count
+  res &lt;- data.frame(
+              x = c(xLeft,  xLeft,  xRight, xRight, NA),
+              y = c(    0, height,  height,      0, NA)
+  )
+  res
+}
+
+one_to_five &lt;- function(hist_data) {
+  bars &lt;- NULL
+  for (k in 1:nrow(hist_data)) {
+    new_bar &lt;- make_one_bar(hist_data[k, ])
+    bars &lt;- rbind(bars, new_bar)
+  }
+  bars
+}
+
+myHistogram=function(data,fill='blue'){
+  nbins=10
+  evenly_spaced=seq(min(data),max(data),length=nbins+1)
+  
+  cuts=cut(data,evenly_spaced)
+  bin_counts=as.vector(table(cuts))
+  
+  hist_basics=data.frame(xL = evenly_spaced[-length(evenly_spaced)],xR=evenly_spaced[-1],count=as.numeric(bin_counts))
+  
+  my_bars=one_to_five(hist_basics)
+  plot(my_bars, type=&quot;n&quot;)
+  lines(my_bars)
+  polygon(my_bars,col=fill)
+  
+  ave = mean(data)
+  stdev = sd(data)
+  xx=seq(min(data),max(data),abs(max(data)-min(data))/100)
+  lines(xx,length(data)*dnorm(xx,mean=ave,sd=stdev))
+  
+  return(bin_counts)
+}</code></pre>
 </div>
-<div id="task-3" class="section level2">
-<h2>Task 3</h2>
-<pre class="r"><code>task3 &lt;- with(Auto, summary(horsepower))</code></pre>
+<div id="task-2" class="section level1">
+<h1>Task 2</h1>
+<pre class="r"><code>v = rnorm(10, mean=100, sd=1)
+bandwidth=sqrt(range(v))
+kernel=function(x){
+   
+}</code></pre>
 </div>
-<div id="task-5" class="section level2">
-<h2>Task 5</h2>
-<pre class="r"><code>task5top &lt;- Auto[1:5,1:3]
-task5bottom &lt;- Auto[393:397,7:9]</code></pre>
-</div>
+<div id="task-3" class="section level1">
+<h1>Task 3</h1>
 <div id="test-statements" class="section level2">
 <h2>Test statements</h2>
-<pre class="r"><code>scoreActivity::score253(2)</code></pre>
+<pre class="r"><code>scoreActivity::score253(6)</code></pre>
 <pre><code>## --------
-## Running test statements for day  02</code></pre>
+## Running test statements for day  06</code></pre>
 <pre><code>## Loading required package: scoreActivity</code></pre>
 <pre><code>## Loading required package: lazyeval</code></pre>
-<pre><code>## passed: object &quot;Auto&quot; exists
-## passed: is.character(auto_file_name)
-## passed: object &quot;task3&quot; exists
-## passed: &quot;package:ISLR&quot; %in% search()
-## passed: nrow(task5top)
-## passed: ncol(task5top)
-## passed: nrow(task5bottom)
-## passed: ncol(task5bottom)
-## passed: task5top[5, 3] == Auto[5, 3]
-## passed: task5bottom[5, 3] == Auto[nrow(Auto), ncol(Auto)]</code></pre>
+<pre><code>## passed: object &quot;myHistogram&quot; exists
+## passed: &quot;fill&quot; %in% names(formals(myHistogram))
+## passed: &quot;dnorm&quot; %in% all.names(body(myHistogram))</code></pre>
 </div>
 </div>
 
