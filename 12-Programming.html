@@ -136,9 +136,9 @@ Three=cbind(rnorm(n_cases),rnorm(n_cases))
 Red=One%*%chol(covar_red)
 Green=Two%*%(chol(covar_red))
 Blue=Three%*%chol(covar_blue)
-Red=Red+matrix(red_mean,nrow=length(Red[,1]),ncol=2)
-Green=Green+matrix(green_mean,nrow=length(Green[,1]),ncol=2)
-Blue=Blue+matrix(blue_mean,nrow=length(Blue[,1]),ncol=2)
+Red=Red+matrix(red_mean,nrow=length(Red[,1]),ncol=2,by=TRUE)
+Green=Green+matrix(green_mean,nrow=length(Green[,1]),ncol=2,by=TRUE)
+Blue=Blue+matrix(blue_mean,nrow=length(Blue[,1]),ncol=2,by=TRUE)
 Red=data.frame(x=Red[,1],y=Red[,2],class='Red',stringsAsFactors = FALSE)
 Blue=data.frame(x=Blue[,1],y=Blue[,2],class='Blue',stringsAsFactors = FALSE)
 Green=data.frame(x=Green[,1],y=Green[,2],class='Green',stringsAsFactors = FALSE)
@@ -158,13 +158,41 @@ test_QDA_one &lt;- predict(mod_QDA_one, newdata = Same_sigma)</code></pre>
 <pre class="r"><code>table(Same_sigma$class, test_LDA_one$class)</code></pre>
 <pre><code>##        
 ##         Green Red
-##   Green    76  24
-##   Red      18  82</code></pre>
+##   Green   100   0
+##   Red       0 100</code></pre>
 <pre class="r"><code>table(Same_sigma$class, test_QDA_one$class)</code></pre>
 <pre><code>##        
 ##         Green Red
-##   Green    76  24
-##   Red      19  81</code></pre>
+##   Green   100   0
+##   Red       0 100</code></pre>
+<div id="task-4" class="section level2">
+<h2>Task 4</h2>
+<pre class="r"><code>n_cases=1000
+red_mean=c(1, 0)
+green_mean=c(0,-1)
+blue_mean=c(-1, 1)
+covar_red = cbind(c(3,-1.7),c(-1.7,1))
+covar_blue = cbind(c(2,1.5),c(1.5,3))
+One=cbind(rnorm(n_cases),rnorm(n_cases))
+Two=cbind(rnorm(n_cases),rnorm(n_cases))
+Three=cbind(rnorm(n_cases),rnorm(n_cases))
+Red=One%*%chol(covar_red)
+Green=Two%*%(chol(covar_red))
+Blue=Three%*%chol(covar_blue)
+Red=Red+matrix(red_mean,nrow=length(Red[,1]),ncol=2)
+Green=Green+matrix(green_mean,nrow=length(Green[,1]),ncol=2)
+Blue=Blue+matrix(blue_mean,nrow=length(Blue[,1]),ncol=2)
+Red=data.frame(x=Red[,1],y=Red[,2],class='Red',stringsAsFactors = FALSE)
+Blue=data.frame(x=Blue[,1],y=Blue[,2],class='Blue',stringsAsFactors = FALSE)
+Green=data.frame(x=Green[,1],y=Green[,2],class='Green',stringsAsFactors = FALSE)
+Same_sigma &lt;- rbind(Red, Green)
+Different_sigma &lt;- rbind(Red, Blue)
+
+mod_LDA_two &lt;- lda(class ~ x + y, data = Same_sigma)
+test_LDA_two &lt;- predict(mod_LDA_two, newdata = Same_sigma)
+mod_QDA_two &lt;- qda(class ~ x + y, data = Same_sigma)
+test_QDA_two &lt;- predict(mod_QDA_two, newdata = Same_sigma)</code></pre>
+</div>
 <div id="test-statements" class="section level2">
 <h2>Test statements</h2>
 <pre class="r"><code>scoreActivity::score253(12)</code></pre>
@@ -179,9 +207,9 @@ test_QDA_one &lt;- predict(mod_QDA_one, newdata = Same_sigma)</code></pre>
 ##     0.5)
 ## passed: all(table(Same_sigma$class) == c(n_cases, n_cases))
 ## passed: object &quot;mod_LDA_one&quot; exists
-## FAILED: object &quot;mod_QDA_two&quot; doesn't exist.
+## passed: object &quot;mod_QDA_two&quot; exists
 ## passed: object &quot;test_QDA_one&quot; exists
-## FAILED: object &quot;test_LDA_two&quot; doesn't exist.</code></pre>
+## passed: object &quot;test_LDA_two&quot; exists</code></pre>
 </div>
 </div>
 

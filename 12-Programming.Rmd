@@ -14,9 +14,9 @@ Three=cbind(rnorm(n_cases),rnorm(n_cases))
 Red=One%*%chol(covar_red)
 Green=Two%*%(chol(covar_red))
 Blue=Three%*%chol(covar_blue)
-Red=Red+matrix(red_mean,nrow=length(Red[,1]),ncol=2)
-Green=Green+matrix(green_mean,nrow=length(Green[,1]),ncol=2)
-Blue=Blue+matrix(blue_mean,nrow=length(Blue[,1]),ncol=2)
+Red=Red+matrix(red_mean,nrow=length(Red[,1]),ncol=2,by=TRUE)
+Green=Green+matrix(green_mean,nrow=length(Green[,1]),ncol=2,by=TRUE)
+Blue=Blue+matrix(blue_mean,nrow=length(Blue[,1]),ncol=2,by=TRUE)
 Red=data.frame(x=Red[,1],y=Red[,2],class='Red',stringsAsFactors = FALSE)
 Blue=data.frame(x=Blue[,1],y=Blue[,2],class='Blue',stringsAsFactors = FALSE)
 Green=data.frame(x=Green[,1],y=Green[,2],class='Green',stringsAsFactors = FALSE)
@@ -38,6 +38,37 @@ test_QDA_one <- predict(mod_QDA_one, newdata = Same_sigma)
 table(Same_sigma$class, test_LDA_one$class)
 table(Same_sigma$class, test_QDA_one$class)
 ```
+
+## Task 4
+```{r}
+```{r}
+n_cases=1000
+red_mean=c(1, 0)
+green_mean=c(0,-1)
+blue_mean=c(-1, 1)
+covar_red = cbind(c(3,-1.7),c(-1.7,1))
+covar_blue = cbind(c(2,1.5),c(1.5,3))
+One=cbind(rnorm(n_cases),rnorm(n_cases))
+Two=cbind(rnorm(n_cases),rnorm(n_cases))
+Three=cbind(rnorm(n_cases),rnorm(n_cases))
+Red=One%*%chol(covar_red)
+Green=Two%*%(chol(covar_red))
+Blue=Three%*%chol(covar_blue)
+Red=Red+matrix(red_mean,nrow=length(Red[,1]),ncol=2)
+Green=Green+matrix(green_mean,nrow=length(Green[,1]),ncol=2)
+Blue=Blue+matrix(blue_mean,nrow=length(Blue[,1]),ncol=2)
+Red=data.frame(x=Red[,1],y=Red[,2],class='Red',stringsAsFactors = FALSE)
+Blue=data.frame(x=Blue[,1],y=Blue[,2],class='Blue',stringsAsFactors = FALSE)
+Green=data.frame(x=Green[,1],y=Green[,2],class='Green',stringsAsFactors = FALSE)
+Same_sigma <- rbind(Red, Green)
+Different_sigma <- rbind(Red, Blue)
+
+mod_LDA_two <- lda(class ~ x + y, data = Same_sigma)
+test_LDA_two <- predict(mod_LDA_two, newdata = Same_sigma)
+mod_QDA_two <- qda(class ~ x + y, data = Same_sigma)
+test_QDA_two <- predict(mod_QDA_two, newdata = Same_sigma)
+```
+
 
 ## Test statements
 
