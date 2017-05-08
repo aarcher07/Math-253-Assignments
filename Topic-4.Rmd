@@ -1,6 +1,7 @@
 # Topic 4 Exercises: Classification
 ```{r}
 library(ISLR)
+library(MASS)
 ```
 ## 1 Logistic function to logit representation
 
@@ -49,8 +50,8 @@ Weight, displacement horsepower are the best predictors of mpg01 because of the 
 ##c) Training and Testing Data
 
 ```{r}
-training=Auto[as.numeric(Auto$year) <11,]
-testing = Auto[!(as.numeric(Auto$year) < 11),]
+training=Auto[as.numeric(Auto$year) <77,]
+testing = Auto[!(as.numeric(Auto$year) < 77),]
 ```
 
 ## d) LDA
@@ -143,6 +144,7 @@ plot(Boston$crim01,Boston$black)
 plot(Boston$crim01,Boston$lstat)
 plot(Boston$crim01,Boston$medv)
 ```
+
 ```{r}
  
 training=Boston[Boston$age <85,]
